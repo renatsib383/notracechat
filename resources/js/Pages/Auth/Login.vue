@@ -44,13 +44,18 @@ const tglogin = () => {
     tgForm.post(route('tglogin'))
 }
 
+onMounted(() => {
+    if(tgUserData){
+        tglogin();
+    }
+})
 
 
 
 </script>
 
 <template>
-    <GuestLayout>
+    <GuestLayout v-if="!tgUserData">
         <Head title="Log in" />
 
         <div v-if="status" class="mb-4 text-sm font-medium text-green-600">
@@ -131,5 +136,8 @@ const tglogin = () => {
                     Войти через телеграм как {{ tgUserData.first_name ?? tgUserData.username }}
                 </PrimaryButton>
         </form>
+    </GuestLayout>
+    <GuestLayout v-else>
+        <h1>Загрузка...</h1>
     </GuestLayout>
 </template>
