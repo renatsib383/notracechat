@@ -6,6 +6,9 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { onMounted, ref } from 'vue';
+import axios from 'axios';
+
 import WebApp from '@twa-dev/sdk';
 defineProps({
     canResetPassword: {
@@ -16,11 +19,20 @@ defineProps({
     },
 });
 
+const tgUserData = WebApp.initDataUnsafe?.user;
+
 const form = useForm({
     email: '',
     password: '',
     remember: false,
 });
+
+const tgForm = useForm({
+    id: tgUserData?.id,
+    username: tgUserData?.username,
+    first_name: tgUserData?.first_name,
+    last_name: tgUserData?.last_name,
+})
 
 const submit = () => {
     form.post(route('login'), {
@@ -28,7 +40,13 @@ const submit = () => {
     });
 };
 
-const tgUserData = WebApp.initDataUnsafe?.user;
+const tglogin = () => {
+    tgForm.post(route('tglogin'))
+}
+
+
+
+
 </script>
 
 <template>
@@ -38,16 +56,6 @@ const tgUserData = WebApp.initDataUnsafe?.user;
         <div v-if="status" class="mb-4 text-sm font-medium text-green-600">
             {{ status }}
         </div>
-        <div v-if="tgUserData">
-            <p>User ID: {{ tgUserData.id }}</p>
-            <p>Username: {{ tgUserData.username }}</p>
-            <p>First Name: {{ tgUserData.first_name }}</p>
-            <p>Last Name: {{ tgUserData.last_name }}</p>
-        </div>
-        <div v-else>
-            <p>No tg user data</p>
-        </div>
-
         <form @submit.prevent="submit">
             <div>
                 <InputLabel for="email" value="Email" />
@@ -93,9 +101,16 @@ const tgUserData = WebApp.initDataUnsafe?.user;
                 <Link
                     v-if="canResetPassword"
                     :href="route('password.request')"
-                    class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
+                    class="mr-3 rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
                 >
                     Forgot your password?
+                </Link>
+
+                <Link
+                    :href="route('register')"
+                    class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
+                >
+                    Register
                 </Link>
 
                 <PrimaryButton
@@ -106,6 +121,15 @@ const tgUserData = WebApp.initDataUnsafe?.user;
                     Log in
                 </PrimaryButton>
             </div>
+        </form>
+        <form v-if="tgUserData" @submit.prevent="tglogin">
+            <PrimaryButton
+                    class="mt-4 text-center w-full !bg-blue-400"
+                    :class="{ 'opacity-25': tgForm.processing }"
+                    :disabled="tgForm.processing"
+                >
+                    Войти через телеграм как {{ tgUserData.first_name ?? tgUserData.username }}
+                </PrimaryButton>
         </form>
     </GuestLayout>
 </template>

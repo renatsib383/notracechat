@@ -10,7 +10,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
-
+use App\Models\User;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Hash;
 class AuthenticatedSessionController extends Controller
 {
     /**
@@ -33,6 +35,34 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        return redirect()->intended(route('dashboard', absolute: false));
+    }
+
+    public function tglogin(Request $request): RedirectResponse
+    {
+
+        // Поиск пользователя по telegram_id
+        $user = User::where('telegram_id', $request->id)->first();
+        
+        if (!$user) {
+            // Если пользователь не найден, создаем нового
+
+            $name = $request->first_name ?? $request->username;
+
+            $user = User::create([
+                'name' => $name,
+                'email' => $request->id . '@telegram.user',
+                'telegram_id' => $request->id,
+                'password' => Hash::make('12345678'),
+            ]);
+            
+           // event(new Registered($user));
+        }
+        
+        Auth::login($user);
+        
+        $request->session()->regenerate();
+        
         return redirect()->intended(route('dashboard', absolute: false));
     }
 
