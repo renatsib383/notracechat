@@ -6,7 +6,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
-
+import WebApp from '@twa-dev/sdk';
 defineProps({
     canResetPassword: {
         type: Boolean,
@@ -27,6 +27,8 @@ const submit = () => {
         onFinish: () => form.reset('password'),
     });
 };
+
+const tgUserData = WebApp.initDataUnsafe?.user;
 </script>
 
 <template>
@@ -35,6 +37,15 @@ const submit = () => {
 
         <div v-if="status" class="mb-4 text-sm font-medium text-green-600">
             {{ status }}
+        </div>
+        <div v-if="tgUserData">
+            <p>User ID: {{ tgUserData.id }}</p>
+            <p>Username: {{ tgUserData.username }}</p>
+            <p>First Name: {{ tgUserData.first_name }}</p>
+            <p>Last Name: {{ tgUserData.last_name }}</p>
+        </div>
+        <div v-else>
+            <p>No tg user data</p>
         </div>
 
         <form @submit.prevent="submit">
