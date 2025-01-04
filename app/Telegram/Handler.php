@@ -9,7 +9,7 @@ use DefStudio\Telegraph\Models\TelegraphBot;
 use DefStudio\Telegraph\Facades\Telegraph;
 use DefStudio\Telegraph\Keyboard\Keyboard;
 use DefStudio\Telegraph\Keyboard\Button;
-
+use App\Models\Room;
 class Handler extends WebhookHandler
 {
 
@@ -24,7 +24,8 @@ class Handler extends WebhookHandler
     }
 
     public function hello(string $name): void{
-        $this->reply("Hello, $name!");
+        
+        $this->reply('`текст для копирования`');
     }
 
     public function help(): void{
@@ -67,6 +68,20 @@ class Handler extends WebhookHandler
     protected function handleChatMessage(Stringable $text): void
     {
         Log::info($this->message);
-        $this->reply($text);
+        if(str_starts_with($text->value(), 'room')){
+            $chatId = $this->chat->chat_id;
+            $roomId = substr($text->value(), 4);
+            $room = Room::where('hash', $roomId)->first();
+            Telegraph::chat($chatId) 
+        ->message('Добро пожаловать в чат '.$room->name)
+        ->keyboard(
+            Keyboard::make()->buttons([
+                Button::make('Войти в чат')->webApp('https://tgchat.atloncrm.ru/chat/'.$room->hash),
+            ])
+        )
+        ->send();
+    }else{
+            $this->reply($text);
+        }
     }
 }

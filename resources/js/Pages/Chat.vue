@@ -66,6 +66,14 @@ onMounted(() => {
 onUnmounted(() => {
   window.Echo.leave("chat." + room.value.id);
 });
+
+const copyHash = (hash) => {
+  navigator.clipboard.writeText(hash).then(() => {
+    alert("Hash copied to clipboard");
+  }).catch((error) => {
+    alert("Failed to copy hash to clipboard");
+  });
+};
 </script>
 
 <template>
@@ -74,7 +82,7 @@ onUnmounted(() => {
   <div class="bg-blue-100 h-dvh relative">
     <div class="absolute top-0 left-0 w-full bg-red-100 py-1">
       <Link :href="route('dashboard')" class="text-blue-500 mr-2 font-bold text-lg">Назад</Link>
-      <span class="px-3 py-1 bg-blue-300 rounded-full text-sm mr-1">
+      <span @click="copyHash('room'+room.hash)" class="px-3 py-1 bg-blue-300 rounded-full text-sm mr-1">
         {{ room.name }}
       </span>
       <span
