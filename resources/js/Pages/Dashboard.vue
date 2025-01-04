@@ -1,10 +1,12 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, usePage } from '@inertiajs/vue3';
+import { Head, Link, usePage } from '@inertiajs/vue3';
 import { ref, onMounted, onUnmounted } from 'vue';
 
 const page = usePage()
 const user = ref(page.props.auth.user)
+const myRooms = ref(page.props.myRooms)
+const suscribedRooms = ref(page.props.suscribedRooms)
 
 
 onMounted(() => {
@@ -34,14 +36,28 @@ onUnmounted(() => {
         <div class="py-12">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
 
+                <h2 class="text-2xl font-bold mb-4">Мои комнаты</h2>
 
-               <div
-                    class="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800"
+               <div v-for="room in myRooms" :key="room.id" class="mb-2 overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800"
                 >
                     <div class="p-6 text-gray-900 dark:text-gray-100">
-                        Главная страница
+                        <h3 class="text-lg font-bold"><Link :href="route('chat', room.hash)">{{ room.name }}</Link></h3>
+
+
                     </div>
                 </div>
+
+                <h2 class="text-2xl font-bold my-4">Подписки</h2>
+
+                <div v-for="room in suscribedRooms" :key="room.id" class="mb-2 overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800"
+                >
+                    <div class="p-6 text-gray-900 dark:text-gray-100">
+                        <h3 class="text-lg font-bold"><Link :href="route('chat', room.hash)">{{ room.name }}</Link></h3>
+
+                    </div>
+                </div>
+
+                <h3 class="text-lg font-bold my-4"><Link :href="route('room.new')">Создать новую комнату</Link></h3>
             </div>
         </div>
     </AuthenticatedLayout>

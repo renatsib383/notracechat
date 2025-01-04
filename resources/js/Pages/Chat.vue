@@ -1,6 +1,6 @@
 <script setup>
 import ChatLayout from "@/Layouts/ChatLayout.vue";
-import { Head, usePage } from "@inertiajs/vue3";
+import { Head, Link, usePage } from "@inertiajs/vue3";
 import { ref, onMounted, onUnmounted } from "vue";
 
 const page = usePage();
@@ -8,11 +8,11 @@ const page = usePage();
 const newMessage = ref("");
 const messages = ref({});
 const user = ref(page.props.auth.user);
-const room_hash = ref(page.props.room_hash);
+const room = ref(page.props.room);
 const activeUsers = ref({});
 const editableDiv = ref(null);
 const broadcastTyping = () => {
-  window.Echo.private("chat." + room_hash.value).whisper("private-message", {
+  window.Echo.private("chat." + room.value.id).whisper("private-message", {
     text: newMessage.value,
     user_id: user.value.id,
     username: user.value.name,
@@ -32,7 +32,7 @@ const clearText = () => {
 };
 
 const listenForMessages = () => {
-  window.Echo.private("chat." + room_hash.value).listenForWhisper(
+  window.Echo.private("chat." + room.value.id).listenForWhisper(
     "private-message",
     (e) => {
       console.log(e);
@@ -42,7 +42,7 @@ const listenForMessages = () => {
 };
 
 const listenForPresence = () => {
-  window.Echo.join("chat." + room_hash.value)
+  window.Echo.join("chat." + room.value.id)
     .here((users) => {
       users.forEach((user) => {
         activeUsers.value[user.id] = user;
@@ -58,12 +58,13 @@ const listenForPresence = () => {
 
 onMounted(() => {
   console.log(user.value);
+  console.log(room.value);
   listenForMessages();
   listenForPresence();
 });
 
 onUnmounted(() => {
-  window.Echo.leave("chat." + room_hash.value);
+  window.Echo.leave("chat." + room.value.id);
 });
 </script>
 
@@ -72,6 +73,10 @@ onUnmounted(() => {
 
   <div class="bg-blue-100 h-dvh relative">
     <div class="absolute top-0 left-0 w-full bg-red-100 py-1">
+      <Link :href="route('dashboard')" class="text-blue-500 mr-2 font-bold text-lg">Назад</Link>
+      <span class="px-3 py-1 bg-blue-300 rounded-full text-sm mr-1">
+        {{ room.name }}
+      </span>
       <span
         v-for="user in activeUsers"
         :key="user.id"
