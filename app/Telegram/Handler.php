@@ -40,7 +40,11 @@ class Handler extends WebhookHandler
     // }
 
     public function actions(): void{
-        Telegraph::message('*Действия*')
+        // Получаем chat_id из входящего сообщения
+    $chatId = $this->chat->chat_id;
+
+    Telegraph::chat($chatId) // Добавляем chat_id
+        ->message('*Действия*')
         ->keyboard(
             Keyboard::make()->buttons([
                 Button::make('Чат 1')->webApp('https://tgchat.atloncrm.ru/chat/1'),
@@ -62,7 +66,7 @@ class Handler extends WebhookHandler
 
     protected function handleChatMessage(Stringable $text): void
     {
-        Log::info($this->message->from()->id());
+        Log::info($this->message);
         $this->reply($text);
     }
 }
