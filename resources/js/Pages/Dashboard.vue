@@ -1,5 +1,5 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import Layout from '@/Layout.vue';
 import { Head, Link, usePage } from '@inertiajs/vue3';
 import { ref, onMounted, onUnmounted } from 'vue';
 
@@ -22,7 +22,7 @@ onUnmounted(() => {
 <template>
     <Head title="Dashboard" />
 
-    <AuthenticatedLayout>
+    <Layout>
         <template #header>
             <h2
                 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200"
@@ -60,5 +60,5 @@ onUnmounted(() => {
                 <h3 class="text-lg font-bold my-4"><Link :href="route('room.new')">Создать новую комнату</Link></h3>
             </div>
         </div>
-    </AuthenticatedLayout>
+    </Layout>
 </template>

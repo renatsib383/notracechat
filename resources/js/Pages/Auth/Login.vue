@@ -1,10 +1,10 @@
 <script setup>
-import Checkbox from '@/Components/Checkbox.vue';
+import Checkbox from '@/BreezeComponents/Checkbox.vue';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
+import InputError from '@/BreezeComponents/InputError.vue';
+import InputLabel from '@/BreezeComponents/InputLabel.vue';
+import PrimaryButton from '@/BreezeComponents/PrimaryButton.vue';
+import TextInput from '@/BreezeComponents/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { onMounted, ref } from 'vue';
 import axios from 'axios';
@@ -24,7 +24,7 @@ const tgUserData = WebApp.initDataUnsafe?.user;
 const form = useForm({
     email: '',
     password: '',
-    remember: false,
+    remember: true,
 });
 
 const tgForm = useForm({
@@ -118,13 +118,14 @@ onMounted(() => {
                     Register
                 </Link>
 
-                <PrimaryButton
+                <Button
+                    type="submit"
                     class="ms-4"
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
                 >
                     Log in
-                </PrimaryButton>
+                </Button>
             </div>
         </form>
         <form v-if="tgUserData" @submit.prevent="tglogin">

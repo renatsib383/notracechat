@@ -1,8 +1,8 @@
 <script setup>
 import GuestLayout from '@/Layouts/AuthenticatedLayout.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
+import InputLabel from '@/BreezeComponents/InputLabel.vue';
+import PrimaryButton from '@/BreezeComponents/PrimaryButton.vue';
+import TextInput from '@/BreezeComponents/TextInput.vue';
 import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
 import { onMounted, ref } from 'vue';
 
